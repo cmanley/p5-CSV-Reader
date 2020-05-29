@@ -1,7 +1,8 @@
 # CSV::Reader - CSV reader class
 
-Easy to use Perl CSV file/handle reader class that's meant for reading typical CSV files having a CSV header row.
-This was designed with the idea of using an iterator interface, but Perl does not support interators (nor interfaces) yet :(
+Easy to use Perl CSV file/handle reader class that's meant for reading typical CSV files having a CSV header row.\
+This was designed with the idea of using an iterator interface, but Perl does not support interators (nor interfaces) yet :(\
+You can also find this module on cpan: https://metacpan.org/pod/CSV::Reader
 
 Synopsis
 --------
