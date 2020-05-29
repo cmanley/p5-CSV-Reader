@@ -9,7 +9,7 @@ Synopsis
 ```perl
 use CSV::Reader ();
 use open OUT => ':locale'; # optional; make perl aware of your terminal's encoding
-        
+
 # Create reader from file name:
 my $reader = new CSV::Reader('/path/to/file.csv');
 
@@ -30,7 +30,7 @@ print "Field names:\n" . join("\n", $reader->fieldNames()) . "\n";
 # Iterate over the data rows:
 while (my $row = $reader->nextRow()) {
     # It's recommended to validate the $row hashref first with something such as Params::Validate.
-    # Now do whatever you want with the (validated) row hashref...    
+    # Now do whatever you want with the (validated) row hashref...
     require Data::Dumper; local $Data::Dumper::Terse = 1;
     print Data::Dumper::Dumper($row);
 }
@@ -114,6 +114,8 @@ Author
 ------
 Craig Manley
 
-Licensing
+Copyright
 ---------
-All of the code in this library is licensed under the MIT license as included in the LICENSE file.
+Copyright (C) 2020 Craig Manley. All rights reserved.
+
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

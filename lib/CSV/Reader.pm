@@ -3,7 +3,7 @@ use strict;
 use Carp qw(carp croak);
 use Text::CSV ();
 use Tie::IxHash ();
-our $VERSION = 1.07;
+our $VERSION = 1.08;
 
 =head1 NAME
 
@@ -46,7 +46,7 @@ This was designed with the idea of using an iterator interface, but Perl does no
 		print Data::Dumper::Dumper($row);
 	}
 
-=head1 PUBLIC CLASS METHODS
+=head1 PUBLIC STATIC METHODS
 
 =head2 new($file, %options)
 
@@ -56,6 +56,7 @@ $file can be a string file name, an open file handle (GLOB), or an IO::Handle ba
 If a string file name is given, then the file is opened via File::BOM.
 
 The following %options are supported:
+
 	- debug: boolean, if true, then debug messages are emitted using warn().
 	- field_aliases: hashref of case insensitive alias (in file) => real name (as expected in code) pairs.
 	- field_normalizer: optional callback that receives a field name by reference to normalize (e.g. make lowercase).
@@ -412,14 +413,16 @@ __END__
 
 =head1 SEE ALSO
 
- L<Text::CSV> used by this class internally.
-
-=head1 COPYRIGHT
-
-This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+L<Text::CSV> used by this class internally.
 
 =head1 AUTHOR
 
 Craig Manley
+
+=head1 COPYRIGHT
+
+Copyright (C) 2020 Craig Manley. All rights reserved.
+
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
 =cut
