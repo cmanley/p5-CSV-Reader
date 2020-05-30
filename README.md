@@ -24,15 +24,29 @@ my $io = IO::File->new(); # subclass of IO::Handle
 $io->open($filename, '<:via(File::BOM)') || die("Failed to open $filename: $!");
 my $reader = new CSV::Reader($io);
 
+# Create reader with advanced options:
+my $reader = new CSV::Reader('/path/to/file.csv',
+	'delimiter' => ';',
+	'enclosure' => '',
+	'field_normalizer' => sub {
+		my $nameref = shift;
+		$$nameref = lc($$nameref);	# lowercase
+		$$nameref =~ s/\s/_/g;	# whitespace to underscore
+	},
+	'field_aliases'	=> {
+		'postal_code' => 'postcode', # applied after normalization
+	},
+);
+
 # Show the field names found in the header row:
 print "Field names:\n" . join("\n", $reader->fieldNames()) . "\n";
 
 # Iterate over the data rows:
 while (my $row = $reader->nextRow()) {
-    # It's recommended to validate the $row hashref first with something such as Params::Validate.
-    # Now do whatever you want with the (validated) row hashref...
-    require Data::Dumper; local $Data::Dumper::Terse = 1;
-    print Data::Dumper::Dumper($row);
+	# It's recommended to validate the $row hashref first with something such as Params::Validate.
+	# Now do whatever you want with the (validated) row hashref...
+	require Data::Dumper; local $Data::Dumper::Terse = 1;
+	print Data::Dumper::Dumper($row);
 }
 ```
 
@@ -55,6 +69,8 @@ The following ```%options``` are supported:
 - ```delimiter```: string, default ','
 - ```enclosure```: string, default '"'
 - ```escape```: string, default backslash
+
+Note: the option ```field_aliases``` is processed after the option ```field_normalizer``` if given.
 
 Public object methods
 ---------------------

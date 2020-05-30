@@ -3,7 +3,7 @@ use strict;
 use Carp qw(carp croak);
 use Text::CSV ();
 use Tie::IxHash ();
-our $VERSION = 1.08;
+our $VERSION = 1.09;
 
 =head1 NAME
 
@@ -34,9 +34,22 @@ This was designed with the idea of using an iterator interface, but Perl does no
 	$io->open($filename, '<:via(File::BOM)') || die("Failed to open $filename: $!");
 	my $reader = new CSV::Reader($io);
 
-	# Show the field names found in the header row:
+	# Create reader with advanced options:
+	my $reader = new CSV::Reader('/path/to/file.csv',
+		'delimiter' => ';',
+		'enclosure' => '',
+		'field_normalizer' => sub {
+			my $nameref = shift;
+			$$nameref = lc($$nameref);	# lowercase
+			$$nameref =~ s/\s/_/g;	# whitespace to underscore
+		},
+		'field_aliases'	=> {
+			'postal_code' => 'postcode', # applied after normalization
+		},
+	);
 
-	print Dumper([$reader->fieldNames()]);
+	# Show the field names found in the header row:
+	print 'Field names: ' . join("\n", $reader->fieldNames()) . "\n";
 
 	# Iterate over the data rows:
 	while (my $row = $reader->nextRow()) {
@@ -65,6 +78,8 @@ The following %options are supported:
 	- enclosure: string, default '"'
 	- escape: string, default backslash
 
+Note: the option field_aliases is processed after the option field_normalizer if given.
+
 =cut
 
 sub new {
@@ -72,18 +87,18 @@ sub new {
 	my $file = shift;
 	my %options = @_;
 	my $self = {
-		'h'					=> undef,						# File handle.
-		'own_h'				=> undef,						# Does this class own the file handle.
-		'field_cols'		=> {},							# Hashref of fieldname => column index pairs.
-		'row'				=> undef,						# Current ReaderRow object.
-		'linenum'			=> 0,							# Data row index.
-		'text_csv'			=> undef,						# The Text::CSV object
+		'h'				=> undef,	# File handle.
+		'own_h'			=> undef,	# Does this class own the file handle.
+		'field_cols'	=> {},		# Hashref of fieldname => column index pairs.
+		'row'			=> undef,	# Current ReaderRow object.
+		'linenum'		=> 0,		# Data row index.
+		'text_csv'		=> undef,	# The Text::CSV object
 
 		# Options:
-		'debug'				=> 0,
-		'delimiter'			=> ',',
-		'enclosure'			=> '"',
-		'escape'			=> '\\',
+		'debug'			=> 0,
+		'delimiter'		=> ',',
+		'enclosure'		=> '"',
+		'escape'		=> '\\',
 		'skip_empty_lines'	=> 0, # TODO: implement this
 	};
 	tie(%{$self->{'field_cols'}}, 'Tie::IxHash');
@@ -198,14 +213,14 @@ sub new {
 			unless(length($name)) {
 				next;
 			}
+			if ($opt_field_normalizer) {
+				&$opt_field_normalizer(\$name);
+			}
 			if (%opt_field_aliases) {
 				my $key = lc($name);
 				if (defined($opt_field_aliases{$key})) {
 					$name = $opt_field_aliases{$key};
 				}
-			}
-			if ($opt_field_normalizer) {
-				&$opt_field_normalizer(\$name);
 			}
 			if (%opt_include_fields && !exists($opt_include_fields{$name})) {
 				next;

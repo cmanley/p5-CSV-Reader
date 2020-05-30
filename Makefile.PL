@@ -2,10 +2,9 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
 	'NAME' => 'CSV::Reader',
-	($[ >= 5.005) ?
-		(	'AUTHOR'   => 'Craig Manley',
-			'ABSTRACT' => 'Simple CSV reader class that uses Text::CSV internally.'
-		) : (),
+	'AUTHOR' => 'Craig Manley',
+	'ABSTRACT' => 'Simple CSV reader class that uses Text::CSV internally.',
+	#'MIN_PERL_VERSION' => '5.013000',
 	'VERSION_FROM' => 'lib/CSV/Reader.pm',
 	'BUILD_REQUIRES' => {
 		'ExtUtils::MakeMaker'	=> 6.48,
