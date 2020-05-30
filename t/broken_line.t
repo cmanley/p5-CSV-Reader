@@ -18,14 +18,15 @@ my $verbose = !$ENV{'HARNESS_ACTIVE'} && 0;
 my $class = 'CSV::Reader';
 require_ok($class) || BAIL_OUT("$class has errors");
 my %default_options = (
-	'delimiter' => ',',
-	'enclosure' => '"',
+	#'delimiter' => ',',
+	#'enclosure' => '"',
 	'field_aliases'	=> {
-		'Postal Code'	=> 'postcode',
+		'Postal Code' => 'postcode',
 	},
 );
 
-my $csvfile = ($0 =~ s|[^/]+$||r) . 'broken_line.csv';
+#my $csvfile = ($0 =~ s|[^/]+$||r) . 'broken_line.csv';
+my $csvfile = $0; $csvfile =~ s|[^/]+$||; $csvfile .= 'broken_line.csv';
 
 if ('test broken line') {
 	my $o = $class->new($csvfile, %default_options);

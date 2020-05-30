@@ -25,7 +25,8 @@ my %default_options = (
 	},
 );
 
-my $csvfile = ($0 =~ s|[^/]+$||r) . 'utf8_with_bom.csv';
+#my $csvfile = ($0 =~ s|[^/]+$||r) . 'utf8_with_bom.csv';
+my $csvfile = $0; $csvfile =~ s|[^/]+$||; $csvfile .= 'utf8_with_bom.csv';
 
 my %tests = (
 	'file name' =>	{
