@@ -28,12 +28,25 @@ my %default_options = (
 	'field_aliases'	=> {
 		'postal_code' => 'postcode', # applied after normalization
 	},
+	'mutators' => {
+		'postcode' => sub {	# if postalcode is Dutch, then make sure it has no spaces and is in uppercase.
+			my $val_ref = shift;
+			my $row_ref = shift;
+			if (defined($$val_ref)) {
+				$$val_ref =~ s/^(\d{4})([A-Z]{2})$/$1 $2/;	# add space between digits and letters
+			}
+		},
+		'street_entrance' => sub {	# set a default for an empty (undef) value
+			my $val_ref = shift;
+			$$val_ref //= 'ground';
+		},
+	},
 );
 
 #my $csvfile = ($0 =~ s|[^/]+$||r) . 'utf8_with_bom.csv';
 my $csvfile = $0; $csvfile =~ s|[^/]+$||; $csvfile .= 'utf8_with_bom.csv';
 
-if ('test field_normalizer and field_aliases') {
+if ('test field_normalizer, field_aliases, and mutators') {
 	my $o = $class->new($csvfile, %default_options);
 	my @expect = (
 		'id',
@@ -51,8 +64,9 @@ if ('test field_normalizer and field_aliases') {
 	}
 	while (my $row = $o->nextRow()) {
 		my @actual = keys(%$row);
-		is_deeply(\@actual, \@expect, 'Keys of nextRow() are as expected');
-		last;
+		is_deeply(\@actual, \@expect, 'line ' . $o->linenum() . ' keys of nextRow() are as expected');
+		ok($row->{'postcode'} =~ /^\d{4} [A-Z]{2}$/	, 'line ' . $o->linenum() . ' postcode mutator worked');
+		ok($row->{'street_entrance'} eq 'ground'	, 'line ' . $o->linenum() . ' street_entrance mutator worked');
 	}
 }
 

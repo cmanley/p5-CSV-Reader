@@ -1,0 +1,14 @@
+Changes
+CONTRIBUTING.md
+lib/CSV/Reader.pm
+LICENSE
+Makefile.PL
+MANIFEST
+README.md
+t/0basic.t
+t/0pod.t
+t/advanced.t
+t/broken_line.csv
+t/broken_line.t
+t/reader.t
+t/utf8_with_bom.csv
