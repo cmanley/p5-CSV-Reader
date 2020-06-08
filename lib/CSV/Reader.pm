@@ -121,7 +121,7 @@ sub new {
 	};
 	tie(%{$self->{'field_cols'}}, 'Tie::IxHash');
 
-	unless(defined($file) && length($file)) {
+	unless (defined($file) && length($file)) {
 		croak('Missing $file argument');
 	}
 	if (ref($file)) {
@@ -215,7 +215,7 @@ sub new {
 	});
 
 	# Emulate the original Text::CSV error message format but without the LF and with the caller script/module.
-	if (0) {
+	if (0 && $text_csv->can('callbacks')) {	# exists since Text::CSV_XS version 1.06
 		$text_csv->callbacks(
 			'error' => sub {
 				my ($err, $msg, $pos, $recno, $fldno) = @_;	# This is dumb because the object itself is not given.
