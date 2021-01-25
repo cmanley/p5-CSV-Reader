@@ -79,6 +79,18 @@ my %tests = (
 			require File::BOM;
 		},
 	},
+	'file handle via File::BOM and gzip' => {
+		'construct' => sub {
+			my $h;
+			my $file = $csvfile . '.gz';
+			open($h, '<:gzip:via(File::BOM)', $file) || die("Failed to open $file: $!");
+			return $class->new($h, %default_options);
+		},
+		'requires' => sub {
+			require PerlIO::gzip;
+			require File::BOM;
+		},
+	},
 	'IO::File (IO::Handle)' => {
 		'construct' => sub {
 			require IO::File;
